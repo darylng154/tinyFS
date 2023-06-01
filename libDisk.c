@@ -1,3 +1,4 @@
+#include "libTinyFS.h"
 #include "libDisk.h"
 
 int openDisk(char *filename, int nBytes){
@@ -6,6 +7,9 @@ int openDisk(char *filename, int nBytes){
       errorOut(sprintf("Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_));
 
     if(nBytes)
+    {
+
+    }
 
 
     /* This function opens a regular UNIX file and designates the first nBytes
@@ -18,7 +22,7 @@ int openDisk(char *filename, int nBytes){
        Errors must be returned for any other failures, 
        as defined by your own error code system.  */
 
-    fileDescriptor = safeOpen(filename);
+    fileDescriptor temp = safeOpen(filename);
     
     return 0; /* 0 on Success*/
 }
