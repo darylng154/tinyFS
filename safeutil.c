@@ -20,7 +20,7 @@ int safeOpen(char *pathname){
     int fd;
 
     errno = 0; /* Clear any errno*/
-    if(NULL == (fd = open(pathname, "rw"))) /* Check for fopen error*/
+    if(-1 == (fd = open(pathname, "rw"))) /* Check for fopen error*/
         errorout("open failed\n");
     
     return fd;
