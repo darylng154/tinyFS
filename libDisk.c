@@ -14,22 +14,19 @@ int readBlock(int disk, int bNum, void *block){
     ssize_t count;
     int offset;
 
-    offset = bNum*BLOCKSIZE_;
-    lseek(fwrite, offset, SEEK_SET);
+    offset = bNum * BLOCKSIZE_;
+    lseek(disk, offset, SEEK_SET);
     count = read(disk, block, BLOCKSIZE_);
-    if(count == -1)
+    if(count > 0)
+    {
+        return 0; /* 0 on Success*/
+    }
+    else if(count == -1)
         errorout("#ERROR: readBlock -1");
     else if(count == 0)
         errorout("#ERROR: readBlock EOF - not a valid block number");
-    else if(count > 0)
-    {
-        
-    }
     else
         errorout("#ERROR: readBlock failed all cases");
-        
-
-    return 0; /* 0 on Success*/
 }
 
 int writeBlock(int disk, int bNum, void *block){
