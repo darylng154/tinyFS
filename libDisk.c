@@ -51,9 +51,7 @@ int readBlock(int disk, int bNum, void *block){
     lseek(disk, offset, SEEK_SET);
     count = read(disk, block, BLOCKSIZE_);
     if(count > 0)
-    {
         return 0; /* 0 on Success*/
-    }
     else if(count == -1)
         errorout("#ERROR: readBlock -1");
     else if(count == 0)
