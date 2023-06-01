@@ -1,0 +1,12 @@
+
+#include "libDisk.h"
+#include "libTinyFS.h"
+
+
+int main(int argc, char *argv[]){
+
+
+
+
+    return 1;
+}
