@@ -18,7 +18,7 @@ int openDisk(char *filename, int nBytes){
        Errors must be returned for any other failures, 
        as defined by your own error code system.  */
 
-    safeOpen(filename)
+    fileDescriptor = safeOpen(filename);
     
     return 0; /* 0 on Success*/
 }
