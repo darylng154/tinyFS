@@ -15,9 +15,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <fcntl.h>
-#include "safeutil.h"
 
+#include "safeutil.h"
 
 int safeOpen(char *pathname, int flags, int mode){
     int fd;
