@@ -1,4 +1,4 @@
-
+#include "libDisk.h"
 #include "safeutil.h"
 
 int openDisk(char *filename, int nBytes){

@@ -54,5 +54,4 @@ int tfs_delete(fileDescriptor FD);
 int tfs_readByte(fileDescriptor FD, char *buffer);
 int tfs_seek(fileDescriptor FD, int offset);
 
-
 #endif
