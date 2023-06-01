@@ -13,6 +13,12 @@
 #define DEFAULT_DISK_NAME_ “tinyFSDisk” 	
 typedef int fileDescriptor;
 
+typedef struct disk_info{
+    char diskName[256];
+    fileDescriptor fd;
+    size_t diskSize;
+}disk_info;
+
 struct inode_name_pair{
     char name[9];       /* 8 Chars with then a null Terminator*/
     uint8_t inode;      /* 0-255 Inode numbers*/
