@@ -9,13 +9,25 @@ int openDisk(char *filename, int nBytes){
 }
 
 // bNum = block index
+// seek to bNum in disk & read BLOCKSIZE_ bytes
 int readBlock(int disk, int bNum, void *block){
+    ssize_t count;
+    int offset;
 
-    ssize_t count = read(disk, block, BLOCKSIZE_);
+    offset = bNum*BLOCKSIZE_;
+    lseek(fwrite, offset, SEEK_SET);
+    count = read(disk, block, BLOCKSIZE_);
     if(count == -1)
+        errorout("#ERROR: readBlock -1");
+    else if(count == 0)
+        errorout("#ERROR: readBlock EOF - not a valid block number");
+    else if(count > 0)
     {
-
+        
     }
+    else
+        errorout("#ERROR: readBlock failed all cases");
+        
 
     return 0; /* 0 on Success*/
 }
