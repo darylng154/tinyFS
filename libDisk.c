@@ -42,6 +42,9 @@ int readBlock(int disk, int bNum, void *block){
         errorout("#ERROR: readBlock EOF - not a valid block number");
     else
         errorout("#ERROR: readBlock failed all cases");
+
+    errorout("#ERROR: readBlock reached this and should not have");
+    return -1;
 }
 
 int writeBlock(int disk, int bNum, void *block){
