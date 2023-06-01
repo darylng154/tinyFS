@@ -1,10 +1,11 @@
-#include "libTinyFS.h"
 #include "libDisk.h"
-#include "safeutil.h"
 
 int openDisk(char *filename, int nBytes){
 
-    if(nBytes % )
+    if(nBytes % 1)
+    {
+
+    }
 
     /* This function opens a regular UNIX file and designates the first nBytes
          of it as space for the emulated disk. 
@@ -16,7 +17,7 @@ int openDisk(char *filename, int nBytes){
        Errors must be returned for any other failures, 
        as defined by your own error code system.  */
 
-    safeOpen(filename)
+    safeOpen(filename);
     
     return 0; /* 0 on Success*/
 }

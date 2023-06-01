@@ -6,8 +6,8 @@ LD = gcc
 LDFLAGS = -Wall -Wextra -pedantic
 
 PROG = tinyFsDemo
-OBJS = libDisk.o libTinyFS.o tinyFsDemo.o
-SRCS = libDisk.c libTinyFS.c tinyFsDemo.c
+OBJS = libDisk.o libTinyFS.o tinyFsDemo.o safeutil.o
+SRCS = libDisk.c libTinyFS.c tinyFsDemo.c safeutil.c
 HDRS = libDisk.c libTinyFS.c
 
 all: $(PROG)

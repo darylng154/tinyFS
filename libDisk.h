@@ -1,6 +1,12 @@
 #ifndef LIBDISK_H
 #define LIBDISK_H
 
+#include "libTinyFS.h"
+#include "libDisk.h"
+#include "safeutil.h"
+
+#include <unistd.h>
+
 int openDisk(char *filename, int nBytes);
 int readBlock(int disk, int bNum, void *block);
 int writeBlock(int disk, int bNum, void *block);
