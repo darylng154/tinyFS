@@ -49,3 +49,20 @@ void *safeRealloc(void *ptr, size_t new_size, size_t curr_size, size_t type_size
     
     return new_ptr;
 }
+
+/**
+ * @fn	   : errorout
+ * @brief  : This function prints error information and exits the program.
+ *            
+ * @retval : void
+ * @parms  : char *error
+ */
+void errorout(char *error)
+{
+    if(errno)
+        perror(error);
+    else
+        fprintf(stderr, "%s", error);
+    
+    exit(EXIT_FAILURE);
+}

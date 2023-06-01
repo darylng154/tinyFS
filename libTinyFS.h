@@ -8,9 +8,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define BLOCKSIZE 256
-#define DEFAULT_DISK_SIZE 10240 
-#define DEFAULT_DISK_NAME “tinyFSDisk” 	
+#define BLOCKSIZE_ 256
+#define DEFAULT_DISK_SIZE_ 10240 
+#define DEFAULT_DISK_NAME_ “tinyFSDisk” 	
 typedef int fileDescriptor;
 
 struct inode_name_pair{
