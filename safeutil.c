@@ -16,15 +16,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-FILE *safefOpen(char *file){
-    FILE *file_pt;
+int safeOpen(char *pathname){
+    int fd;
 
     errno = 0; /* Clear any errno*/
-
-    if(NULL == (file_pt = fopen(file, "r"))) /* Check for fopen error*/
-        errorout("Fopen failed\n");
+    if(-1 == (fd = open(pathname, "rw"))) /* Check for fopen error*/
+        errorout("open failed\n");
     
-    return file_pt;
+    return fd;
 }
 
 void *safeMalloc(size_t size){

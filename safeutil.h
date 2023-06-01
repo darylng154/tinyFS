@@ -15,7 +15,7 @@
 #ifndef SAFE_UTIL_H
 #define SAFE_UTIL_H
 
-FILE *safefOpen(char *file);
+int   safeOpen(char *pathname);
 void *safeMalloc(size_t size);
 void *safeRealloc(void *ptr, size_t new_size, size_t curr_size, size_t type_size);
 void errorout(char *error);

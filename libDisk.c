@@ -3,7 +3,8 @@
 #include "safeutil.h"
 
 int openDisk(char *filename, int nBytes){
-    safeOpen();
+    if(safeOpen(filename);
+
     return 0; /* 0 on Success*/
 }
 
