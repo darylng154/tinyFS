@@ -1,30 +1,44 @@
 #include "libTinyFS.h"
 #include "libDisk.h"
+#include "safeutil.h"
+#include <fcntl.h>
+
+
 
 int openDisk(char *filename, int nBytes){
+  char blockBuffer[10];
+  int flags = 0;
+  int modes = 0;
+  if(!(nBytes % BLOCKSIZE_)){
+    sprintf(blockBuffer, "Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_);
+    errorout(blockBuffer);
+  }
 
-    if(!(nBytes % BLOCKSIZE_))
-      errorout(sprintf("Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_));
+  if(nBytes > 0){ /* File may or may not be created. Open/create for read/write*/
+    flags = O_RDWR | O_CREAT;  // Open for read/write, create if it doesnt't exist
+    modes = S_IRUSR | S_IWUSR;
+    return safeOpen(filename, flags, modes);
+  }
+  else if(nBytes == 0){ /* Assumed file is open*/
+    flags = O_RDONLY; // Open for Read only
+    modes = 0;        // Don't need modes when not creating a file
+    return safeOpen(filename, flags, modes);
+  }
+  else if(nBytes < 0)
+    errorout("Number of bytes must be positive.\n");
 
-    if(nBytes)
-    {
+  /* This function opens a regular UNIX file and designates the first nBytes
+        of it as space for the emulated disk. 
+      //  nBytes should be a number that is evenly divisible by the block size.
+      If nBytes > 0 and there is already a file by the given filename, 
+        that disk is resized to nBytes, and that file’s contents may be overwritten. 
+      If nBytes is 0, an existing disk is opened, and should not be overwritten. 
+      There is no requirement to maintain integrity of any content beyond nBytes. 
+      Errors must be returned for any other failures, 
+      as defined by your own error code system.  */
 
-    }
-
-
-    /* This function opens a regular UNIX file and designates the first nBytes
-         of it as space for the emulated disk. 
-        //  nBytes should be a number that is evenly divisible by the block size.
-       If nBytes > 0 and there is already a file by the given filename, 
-         that disk is resized to nBytes, and that file’s contents may be overwritten. 
-       If nBytes is 0, an existing disk is opened, and should not be overwritten. 
-       There is no requirement to maintain integrity of any content beyond nBytes. 
-       Errors must be returned for any other failures, 
-       as defined by your own error code system.  */
-
-    fileDescriptor temp = safeOpen(filename);
-    
-    return 0; /* 0 on Success*/
+  
+  return -1; /* Souldn't get here*/
 }
 
 // bNum = block index
@@ -52,7 +66,6 @@ int readBlock(int disk, int bNum, void *block){
 }
 
 int writeBlock(int disk, int bNum, void *block){
-
     
     return 0; /* 0 on Success*/
 }

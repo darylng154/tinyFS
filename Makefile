@@ -1,9 +1,9 @@
 .PHONY: all clean
 
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -g
+CFLAGS = -Wall -Wextra -g
 LD = gcc
-LDFLAGS = -Wall -Wextra -pedantic
+LDFLAGS = -Wall -Wextra
 
 PROG = tinyFsDemo
 OBJS = libDisk.o libTinyFS.o tinyFsDemo.o safeutil.o
@@ -27,4 +27,7 @@ run: clean all
 
 clean:
 	-rm -f $(OBJS)
-	-rm -f $(PROG)
+	-rm -f $(PROG)# DO NOT DELETE
+
+libDisk.o: libTinyFS.h libDisk.h safeutil.h
+tinyFsDemo.o: libDisk.h libTinyFS.h
