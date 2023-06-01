@@ -24,7 +24,7 @@ int safeOpen(char *pathname){
     int fd;
 
     errno = 0; /* Clear any errno*/
-    if(-1 == (fd = open(pathname, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR))) /* Check for fopen error*/
+    if(-1 == (fd = open(pathname, O_RDWR, S_IRUSR | S_IWUSR))) /* Check for fopen error*/
         errorout("open failed\n");
     
     return fd;

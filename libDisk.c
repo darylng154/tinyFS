@@ -4,7 +4,7 @@
 int openDisk(char *filename, int nBytes){
 
     if(!(nBytes % BLOCKSIZE_))
-      errorOut(sprintf("Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_));
+      errorout(sprintf("Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_));
 
     if(nBytes)
     {
@@ -53,6 +53,7 @@ int readBlock(int disk, int bNum, void *block){
 
 int writeBlock(int disk, int bNum, void *block){
 
+    
     return 0; /* 0 on Success*/
 }
 

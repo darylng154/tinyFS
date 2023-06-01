@@ -22,6 +22,9 @@ depends:
 	@echo Regenerating local dependencies.
 	makedepend -Y $(SRCS)
 
+run: clean all
+	./$(PROG)
+
 clean:
 	-rm -f $(OBJS)
 	-rm -f $(PROG)
