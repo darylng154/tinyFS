@@ -64,6 +64,13 @@ struct superblock{
     // add data structure of the blocks
 }__attribute__((packed));
 
+struct filesystem{
+    DiskInfo disk_info;
+    Superblock superblock;
+    
+
+}__attribute__((packed));
+
 int tfs_mkfs(char *filename, int nBytes);
 int tfs_mount(char *filename);
 int tfs_unmount(void);

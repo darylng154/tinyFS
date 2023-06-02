@@ -16,8 +16,8 @@ void putBLOCKSIZE(char* block)
 int main(int argc, char *argv[]){
 
     char* filename = "file2.txt";
-    char* block[BLOCKSIZE_ + 1];
-    char* write[BLOCKSIZE_ + 1];
+    char block[BLOCKSIZE_ + 1];
+    char write[BLOCKSIZE_ + 1];
     putBLOCKSIZE(write);
 
     fileDescriptor disk = openDisk(filename, BLOCKSIZE_);
