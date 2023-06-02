@@ -22,9 +22,8 @@
 
 int safeOpen(char *pathname, int flags, int mode){
     int fd;
-    // compile issues
-    // O_RDWR | O_CREAT, S_IRUSR | S_IWUSR
-    // errno = 0; /* Clear any errno*/
+
+    errno = 0; /* Clear any errno*/
     if(-1 == (fd = open(pathname, flags, mode))) /* Check for fopen error*/
         errorout("open failed\n");
     

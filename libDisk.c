@@ -1,8 +1,10 @@
 #include "libTinyFS.h"
 #include "libDisk.h"
 #include "safeutil.h"
+#include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+
 
 int openDisk(char *filename, int nBytes){
   char blockBuffer[10];
@@ -12,6 +14,7 @@ int openDisk(char *filename, int nBytes){
     sprintf(blockBuffer, "Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_);
     errorout(blockBuffer);
   }
+
   if(nBytes > 0 && access(filename, F_OK) != 0){ /* File does not exist*/
     flags = O_RDWR | O_CREAT;  // Open for read/write, create if it doesnt't exist
     modes = S_IRUSR | S_IWUSR;
@@ -30,17 +33,6 @@ int openDisk(char *filename, int nBytes){
   else if(nBytes < 0)
     errorout("Number of bytes must be positive.\n");
 
-  /* This function opens a regular UNIX file and designates the first nBytes
-        of it as space for the emulated disk. 
-      //  nBytes should be a number that is evenly divisible by the block size.
-      If nBytes > 0 and there is already a file by the given filename, 
-        that disk is resized to nBytes, and that file’s contents may be overwritten. 
-      If nBytes is 0, an existing disk is opened, and should not be overwritten. 
-      There is no requirement to maintain integrity of any content beyond nBytes. 
-      Errors must be returned for any other failures, 
-      as defined by your own error code system.  */
-
-  
   return -1; /* Souldn't get here*/
 }
 
@@ -88,7 +80,21 @@ int writeBlock(int disk, int bNum, void *block){
   return -1;
 }
 
+
+/* closeDisk() takes a disk number ‘disk’ and makes the disk closed to further I/O; 
+i.e. any subsequent reads or writes to a closed disk should return an error. 
+Closing a disk should also close the underlying file, 
+committing any writes being buffered by the real OS. */
+
+/* Still need to figure out what he means by committing writes. Is there a global
+   buffer we need to flush?*/
 void closeDisk(int disk){
 
+  errno = 0;
+  close(disk);
+  
+  if(errno)
+    errorout(closeDisk);
 
+  return;
 }
