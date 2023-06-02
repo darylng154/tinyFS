@@ -3,13 +3,11 @@
 #include "safeutil.h"
 #include <fcntl.h>
 
-
-
 int openDisk(char *filename, int nBytes){
   char blockBuffer[10];
   int flags = 0;
   int modes = 0;
-  if(!(nBytes % BLOCKSIZE_)){
+  if(nBytes % BLOCKSIZE_){
     sprintf(blockBuffer, "Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_);
     errorout(blockBuffer);
   }

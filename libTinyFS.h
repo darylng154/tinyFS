@@ -13,18 +13,23 @@
 #define DEFAULT_DISK_NAME_ “tinyFSDisk” 	
 typedef int fileDescriptor;
 
-typedef struct disk_info{
+typedef struct disk_info DiskInfo;
+typedef struct superblock Superblock;
+typedef struct inode_name_pair iNodeNamePair;
+typedef struct inode iNode;
+
+struct disk_info{
     char diskName[256];
     fileDescriptor fd;
     size_t diskSize;
-}disk_info;
+}__attribute__((packed));
 
 struct inode_name_pair{
     char name[9];       /* 8 Chars with then a null Terminator*/
     uint8_t inode;      /* 0-255 Inode numbers*/
-} __attribute__((packed));
+}__attribute__((packed));
 
-struct inode {
+struct inode{
     dev_t     st_dev;         /* ID of device containing file */
     ino_t     st_ino;         /* Inode number */
     mode_t    st_mode;        /* File type and mode */
@@ -47,8 +52,17 @@ struct inode {
     // #define st_atime st_atim.tv_sec      /* Backward compatibility */
     // #define st_mtime st_mtim.tv_sec
     // #define st_ctime st_ctim.tv_sec
-};
+}__attribute__((packed));
 
+struct superblock{
+    uint8_t magicNum;   // 1st byte of superblock
+    iNode specialINode; // special inode that tracks name-inode pairs
+
+    size_t diskSize;
+    uint32_t allocBlocks;
+    uint32_t freeBlocks;
+    // add data structure of the blocks
+}__attribute__((packed));
 
 int tfs_mkfs(char *filename, int nBytes);
 int tfs_mount(char *filename);
