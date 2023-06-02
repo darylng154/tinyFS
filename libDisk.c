@@ -69,8 +69,23 @@ int readBlock(int disk, int bNum, void *block){
 }
 
 int writeBlock(int disk, int bNum, void *block){
+  ssize_t count;
+  int offset;
 
-    return 0; /* 0 on Success*/
+  offset = bNum * BLOCKSIZE_;
+  lseek(disk, offset, SEEK_SET);
+  count = write(disk, block, BLOCKSIZE_);
+  if(count > 0)
+      return 0; /* 0 on Success*/
+  else if(count == -1)
+      errorout("#ERROR: writeBlock -1");
+  else if(count == 0)
+      errorout("#ERROR: writeBlock 0");
+  else
+      errorout("#ERROR: writeBlock failed all cases");
+
+  errorout("#ERROR: writeBlock reached this and should not have");
+  return -1;
 }
 
 void closeDisk(int disk){
