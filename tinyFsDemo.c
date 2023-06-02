@@ -9,7 +9,7 @@ void putBLOCKSIZE(char* block)
     int i = 0;
     for(i = 0; i < BLOCKSIZE_; i++)
     {
-        block[i] = i;
+        block[i] = i+1;
     }
 }
 
