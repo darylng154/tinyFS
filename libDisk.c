@@ -2,6 +2,7 @@
 #include "libDisk.h"
 #include "safeutil.h"
 #include <fcntl.h>
+#include <unistd.h>
 
 int openDisk(char *filename, int nBytes){
   char blockBuffer[10];
@@ -11,9 +12,13 @@ int openDisk(char *filename, int nBytes){
     sprintf(blockBuffer, "Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_);
     errorout(blockBuffer);
   }
-
-  if(nBytes > 0){ /* File may or may not be created. Open/create for read/write*/
+  if(nBytes > 0 && access(filename, F_OK) != 0){ /* File does not exist*/
     flags = O_RDWR | O_CREAT;  // Open for read/write, create if it doesnt't exist
+    modes = S_IRUSR | S_IWUSR;
+    return safeOpen(filename, flags, modes);
+  }
+  else if(nBytes > 0){ /* File may or may not be created. Open/create for read/write*/
+    flags = O_RDWR;  // Open for read/write, create if it doesnt't exist
     modes = S_IRUSR | S_IWUSR;
     return safeOpen(filename, flags, modes);
   }
@@ -49,7 +54,9 @@ int readBlock(int disk, int bNum, void *block){
     lseek(disk, offset, SEEK_SET);
     count = read(disk, block, BLOCKSIZE_);
     if(count > 0)
+    {
         return 0; /* 0 on Success*/
+    }
     else if(count == -1)
         errorout("#ERROR: readBlock -1");
     else if(count == 0)
@@ -62,23 +69,8 @@ int readBlock(int disk, int bNum, void *block){
 }
 
 int writeBlock(int disk, int bNum, void *block){
-    ssize_t count;
-    int offset;
 
-    offset = bNum * BLOCKSIZE_;
-    lseek(disk, offset, SEEK_SET);
-    count = write(disk, block, BLOCKSIZE_);
-    if(count > 0)
-        return 0; /* 0 on Success*/
-    else if(count == -1)
-        errorout("#ERROR: writeBlock -1");
-    else if(count == 0)
-        errorout("#ERROR: writeBlock 0");
-    else
-        errorout("#ERROR: writeBlock failed all cases");
-
-    errorout("#ERROR: writeBlock reached this and should not have");
-    return -1;
+    return 0; /* 0 on Success*/
 }
 
 void closeDisk(int disk){

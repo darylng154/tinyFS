@@ -27,7 +27,10 @@ run: clean all
 
 clean:
 	-rm -f $(OBJS)
-	-rm -f $(PROG)# DO NOT DELETE
+	-rm -f $(PROG)
+	
+# DO NOT DELETE
 
 libDisk.o: libTinyFS.h libDisk.h safeutil.h
-tinyFsDemo.o: libDisk.h libTinyFS.h
+tinyFsDemo.o: libDisk.h libTinyFS.h safeutil.h
+safeutil.o: safeutil.h
