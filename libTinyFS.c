@@ -13,16 +13,13 @@ int tfs_mkfs(char *filename, int nBytes)
     return 0;
 }
 
-<<<<<<< HEAD
 // open disk & do checks
-=======
 
 /* tfs_mount(char *filename) “mounts” a TinyFS file system located within ‘filename’. 
  As part of the mount operation, tfs_mount should verify the file system is the correct type. 
  Only one file system may be mounted at a time. 
  Use tfs_unmount to cleanly unmount the currently mounted file system.
   Must return a specified success/error code. */
->>>>>>> 00d019baabe451420c5e3a08e3947dbe0376e4d0
 int tfs_mount(char *filename)
 {
     struct filesystem currFileSystem; // Change if/when we get a global Filesystem struct
@@ -52,12 +49,8 @@ int tfs_mount(char *filename)
     return 0;
 }
 
-<<<<<<< HEAD
 // close disk
-=======
-
 // tfs_unmount(void) “unmounts” the currently mounted file system.
->>>>>>> 00d019baabe451420c5e3a08e3947dbe0376e4d0
 int tfs_unmount(void)
 {
     return 0;
