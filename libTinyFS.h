@@ -8,14 +8,46 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-// max open files = max # inodes + # free blocks
+// Fixed. Don't change
+#define MAX_DISKNAME_SIZE_   256      // OS limits filename size
+#define MAX_FILENAME_SIZE_   9        // P4 limits filename size
+#define SUPER_BLOCK_INDEX_   0        // Block location on disk for readBlock
+#define MAGIC_NUM_INDEX_     0        // Block location on disk for readBlock
+#define MAGIC_NUM_TYPE_DISK_ 7        // Block location on disk for readBlock
+#define MAGIC_NUM_TYPE_USB_  9        // Block location on disk for readBlock
 
-#define BLOCKSIZE_ 256
-#define DEFAULT_DISK_SIZE_ 10240 
-#define DEFAULT_DISK_NAME_ “tinyFSDisk” 	
+// Ajustable for testing
+#define MAX_NUM_DISKS_       10       // How many disks can be opened at a time
+#define BLOCKSIZE_           256      // Read/Write block sizes
+// MAKE SURE NUM_FILES_ * NUM_FILES_ < (NUM_BLOCKS_ - NUM_SPECIAL_BLOCKS_)
+#define NUM_FILES_           5        // Total number of files that can exist on disk
+#define DATA_BLKS_PER_INODE_ 5        // Max number of data blocks per inode
+#define DEFAULT_DISK_SIZE_   10240    // Size of disk. Must be multiple of BLOCKSIZE_. 
+
+// Fixed. Don't change
+#define NUM_SPECIAL_BLOCKS_  2                                   // Superblock & Special Inode
+#define NUM_INODES_          NUM_FILES_
+#define NUM_DATA_BLOCKS_    (DATA_BLKS_PER_INODE_ * NUM_INODES_) // Max number of data blocks
+#define MAX_FILE_SIZE_       (DATA_BLKS_PER_INODE_ * BLOCKSIZE_) // File size limit
+#define DEFAULT_DISK_NAME_   "tinyFSDisk"
+
+// #define CAL_BY_NUM_BLOCKS_
+// Use DISK_SIZE_ where you might use DEFAULT_DISK_SIZE_
+#ifdef CAL_BY_NUM_BLOCKS_
+#define NUM_BLOCKS_ 100                       // Adjustable 
+#define DISK_SIZE_  (BLOCKSIZE_ * NUM_BLOCKS_)
+#else
+#define NUM_BLOCKS_ (DEFAULT_DISK_SIZE_ / BLOCKSIZE_)
+#define DISK_SIZE_   DEFAULT_DISK_SIZE_   
+#endif
+
+#define NUM_FREE_BLOCKS_ (NUM_BLOCKS_ - NUM_SPECIAL_BLOCKS_ - NUM_INODES_ - NUM_DATA_BLOCKS_)
+
+
 typedef int fileDescriptor;
-
 typedef struct disk_info DiskInfo;
+typedef struct disk_info FileInfo;
+typedef struct superblock Superblock;
 typedef struct inode_name_pair iNodeNamePair;
 typedef struct inode iNode;
 typedef struct superblock Superblock;
@@ -24,14 +56,14 @@ typedef struct file_system FileSystem;
 typedef enum {CLOSED = 0, OPEN = 1, UNMOUNTED = 0, MOUNTED = 1} Status;
 
 struct disk_info{
-    char disk_name[256];
+    char disk_name[MAX_DISKNAME_SIZE_];
     fileDescriptor fd;
     size_t disk_size;
     Status status; 
 }__attribute__((packed));
 
 struct inode_name_pair{
-    char name[9];       /* 8 Chars with then a null Terminator*/
+    char name[MAX_FILENAME_SIZE_];       /* 8 Chars with then a null Terminator*/
     uint8_t inode;      /* 0-255 Inode numbers*/
 }__attribute__((packed));
 
@@ -91,6 +123,8 @@ int tfs_write(fileDescriptor FD, char *buffer, int size);
 int tfs_delete(fileDescriptor FD);
 int tfs_readByte(fileDescriptor FD, char *buffer);
 int tfs_seek(fileDescriptor FD, int offset);
+
+extern DiskInfo DiskList[MAX_NUM_DISKS_];
 
 void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, Status status);
 
