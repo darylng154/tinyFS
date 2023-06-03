@@ -5,11 +5,18 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+DiskInfo DiskList[MAX_NUM_DISKS_];
 
 int openDisk(char *filename, int nBytes){
+  static uint8_t openFiles = 0;
   char blockBuffer[10];
   int flags = 0;
   int modes = 0;
+  fileDescriptor fd;
+
+  if(filename == NULL)
+    errorout("Filename is NULL.\n");
+  
   if(nBytes % BLOCKSIZE_){
     sprintf(blockBuffer, "Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_);
     errorout(blockBuffer);
@@ -17,23 +24,32 @@ int openDisk(char *filename, int nBytes){
 
   if(nBytes > 0 && access(filename, F_OK) != 0){ /* File does not exist*/
     flags = O_RDWR | O_CREAT;  // Open for read/write, create if it doesnt't exist
-    modes = S_IRUSR | S_IWUSR;
-    return safeOpen(filename, flags, modes);
+    modes = S_IRUSR | S_IWUSR; // Give read write permissions to User
+    fd = safeOpen(filename, flags, modes);
   }
   else if(nBytes > 0){ /* File may or may not be created. Open/create for read/write*/
-    flags = O_RDWR;  // Open for read/write, create if it doesnt't exist
-    modes = S_IRUSR | S_IWUSR;
-    return safeOpen(filename, flags, modes);
+    flags = O_RDWR;   // Open for read/write
+    modes = 0;        // Don't need modes when not creating a file
+    fd = safeOpen(filename, flags, modes);
   }
   else if(nBytes == 0){ /* Assumed file is open*/
     flags = O_RDONLY; // Open for Read only
     modes = 0;        // Don't need modes when not creating a file
-    return safeOpen(filename, flags, modes);
+    fd = safeOpen(filename, flags, modes);
   }
   else if(nBytes < 0)
     errorout("Number of bytes must be positive.\n");
 
-  return -1; /* Souldn't get here*/
+    if(openFiles + 1 >= MAX_NUM_DISKS_)
+        errorout("To many files open.\n");
+
+    if(filename < MAX_DISKNAME_SIZE_)
+      strcpy(DiskList[openFiles].diskName, filename);
+    DiskList[openFiles].diskSize = nBytes;
+    DiskList[openFiles].fd = fd;
+    DiskList[openFiles++].status = 0; //Not mounted
+
+  return fd; /* Souldn't get here*/
 }
 
 // bNum = block index
@@ -50,13 +66,13 @@ int readBlock(int disk, int bNum, void *block){
         return 0; /* 0 on Success*/
     }
     else if(count == -1)
-        errorout("#ERROR: readBlock -1");
+        errorout("#ERROR: readBlock -1.\n");
     else if(count == 0)
-        errorout("#ERROR: readBlock EOF - not a valid block number");
+        errorout("#ERROR: readBlock EOF - not a valid block number.\n");
     else
-        errorout("#ERROR: readBlock failed all cases");
+        errorout("#ERROR: readBlock failed all cases.\n");
 
-    errorout("#ERROR: readBlock reached this and should not have");
+    errorout("#ERROR: readBlock reached this and should not have.\n");
     return -1;
 }
 
@@ -70,13 +86,13 @@ int writeBlock(int disk, int bNum, void *block){
   if(count > 0)
       return 0; /* 0 on Success*/
   else if(count == -1)
-      errorout("#ERROR: writeBlock -1");
+      errorout("#ERROR: writeBlock -1.\n");
   else if(count == 0)
-      errorout("#ERROR: writeBlock 0");
+      errorout("#ERROR: writeBlock 0.\n");
   else
-      errorout("#ERROR: writeBlock failed all cases");
+      errorout("#ERROR: writeBlock failed all cases.\n");
 
-  errorout("#ERROR: writeBlock reached this and should not have");
+  errorout("#ERROR: writeBlock reached this and should not have.\n");
   return -1;
 }
 
@@ -94,7 +110,7 @@ void closeDisk(int disk){
   close(disk);
   
   if(errno)
-    errorout(closeDisk);
+    errorout("CloseDisk failed.\n");
 
   return;
 }

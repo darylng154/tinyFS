@@ -3,17 +3,51 @@
 #include "safeutil.h"
 #include <unistd.h>
 
+iNode iNodeList[NUM_INODES_];
+DiskInfo DiskList[MAX_NUM_DISKS_];
+
 int tfs_mkfs(char *filename, int nBytes)
 {
     return 0;
 }
 
+
+/* tfs_mount(char *filename) “mounts” a TinyFS file system located within ‘filename’. 
+ As part of the mount operation, tfs_mount should verify the file system is the correct type. 
+ Only one file system may be mounted at a time. 
+ Use tfs_unmount to cleanly unmount the currently mounted file system.
+  Must return a specified success/error code. */
 int tfs_mount(char *filename)
 {
+    struct filesystem currFileSystem; // Change if/when we get a global Filesystem struct
+    char blockBuffer[BLOCKSIZE_];
+
+    int i;
+    // Check list of file systems that have been opened.
+    for(i = 0; i < MAX_NUM_DISKS_; i++){
+        if((strcmp(filename, DiskList[i].diskName) == 0) && 
+            DiskList[i].status == 1)
+            errorout("File Already Mounted.\n");
+    }
+
+    if(readBlock(DiskList[i].fd, SUPER_BLOCK_INDEX_, (void *)blockBuffer) != 0)
+        errorout("readBlock failed in tfs_mount.\n");
+
+    memcpy(&(currFileSystem.superblock), blockBuffer, BLOCKSIZE_); // Need to test
+
+    if(currFileSystem.superblock.magicNum == MAGIC_NUM_TYPE_DISK_ || 
+       currFileSystem.superblock.magicNum == MAGIC_NUM_TYPE_USB_){
+        DiskList[i].status = 1; // Mount the disk
+    }
+    else{
+        errorout("File type not recognized. (Magic Num check in tfs_mount).\n");
+    }
+
     return 0;
 }
 
 
+// tfs_unmount(void) “unmounts” the currently mounted file system.
 int tfs_unmount(void)
 {
     return 0;
@@ -21,6 +55,7 @@ int tfs_unmount(void)
 
 fileDescriptor tfs_open(char *name)
 {
+
     return 0;
 }
 
