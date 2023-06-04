@@ -51,6 +51,13 @@ int main(int argc, char *argv[]){
     readBlock(disk, 10, block);
     printf("block: %s \n", block);
 
+    // testing init structs
+    DiskInfo* disk_info = NULL;
+    
+    printf("\n\n");
+    initDiskInfo(disk_info, "Disk Info 1", 0, 0, CLOSED);
+    printDiskInfo(disk_info);
+
     return 0;
 }
 

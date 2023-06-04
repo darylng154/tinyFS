@@ -50,11 +50,15 @@ typedef struct disk_info FileInfo;
 typedef struct superblock Superblock;
 typedef struct inode_name_pair iNodeNamePair;
 typedef struct inode iNode;
+typedef struct superblock Superblock;
+typedef struct file_system FileSystem;
+
+typedef enum {CLOSED = 0, OPEN = 1, UNMOUNTED = 0, MOUNTED = 1} Status;
 
 typedef enum {CLOSED, OPEN, MOUNTED, UNMOUNTED} DiskStatus;
 
 struct disk_info{
-    char diskName[MAX_DISKNAME_SIZE_];
+    char disk_name[MAX_DISKNAME_SIZE_];
     fileDescriptor fd;
     size_t diskSize;
     DiskStatus status;
@@ -91,20 +95,25 @@ struct inode{
 }__attribute__((packed));
 
 struct superblock{
-    uint8_t magicNum;   // 1st byte of superblock
-    iNode specialINode; // special inode that tracks name-inode pairs
+    uint8_t magic_num;   // 1st byte of superblock
+    // special inode block number of inode that tracks name-inode pairs
+    // You will also need to create one special inode that represents the root directory. 
+    // You can think of this as a special file whose data contains name-inode pairs for all 
+    // the files within TinyFS. You must support names up to 8 alphanumeric characters (not 
+    // including a NULL terminator), and no longer. For example: “file1234”, “file1” or “f”.
+    int special_bNum; 
 
-    size_t diskSize;
-    uint32_t allocBlocks; 
-    uint32_t freeBlocks;
-    // add data structure of the blocks
+    size_t disk_size;
+    uint32_t alloc_blocks;
+    uint32_t free_blocks;
+    // add data structure of the blocks (potentiall managing all block types)
 }__attribute__((packed));
 
-struct filesystem{
+struct file_system{
     DiskInfo disk_info;
+    // opened file resource table
     Superblock superblock;
-    
-
+    iNode special_iNode;
 }__attribute__((packed));
 
 int tfs_mkfs(char *filename, int nBytes);
@@ -118,5 +127,12 @@ int tfs_readByte(fileDescriptor FD, char *buffer);
 int tfs_seek(fileDescriptor FD, int offset);
 
 extern DiskInfo DiskList[MAX_NUM_DISKS_];
+
+void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, Status status);
+
+
+
+
+void printDiskInfo(const DiskInfo* disk_info);
 
 #endif
