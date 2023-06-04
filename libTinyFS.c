@@ -22,13 +22,13 @@ int tfs_mkfs(char *filename, int nBytes)
   Must return a specified success/error code. */
 int tfs_mount(char *filename)
 {
-    struct filesystem currFileSystem; // Change if/when we get a global Filesystem struct
+    FileSystem currFileSystem; // Change if/when we get a global Filesystem struct
     char blockBuffer[BLOCKSIZE_];
 
     int i;
     // Check list of file systems that have been opened.
     for(i = 0; i < MAX_NUM_DISKS_; i++){
-        if((strcmp(filename, DiskList[i].diskName) == 0) && 
+        if((strcmp(filename, DiskList[i].disk_name) == 0) && 
             DiskList[i].status == 1)
             errorout("File Already Mounted.\n");
     }
@@ -38,8 +38,8 @@ int tfs_mount(char *filename)
 
     memcpy(&(currFileSystem.superblock), blockBuffer, BLOCKSIZE_); // Need to test
 
-    if(currFileSystem.superblock.magicNum == MAGIC_NUM_TYPE_DISK_ || 
-       currFileSystem.superblock.magicNum == MAGIC_NUM_TYPE_USB_){
+    if(currFileSystem.superblock.magic_num == MAGIC_NUM_TYPE_DISK_ || 
+       currFileSystem.superblock.magic_num == MAGIC_NUM_TYPE_USB_){
         DiskList[i].status = 1; // Mount the disk
     }
     else{
@@ -87,7 +87,7 @@ int tfs_seek(fileDescriptor FD, int offset)
     return 0;
 }
 
-void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, Status status)
+void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, DiskStatus status)
 {
     disk_info = (DiskInfo*) safeMalloc(sizeof(DiskInfo));
     strcpy(disk_info->disk_name, disk_name);
@@ -102,7 +102,7 @@ void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_
 
 void printDiskInfo(const DiskInfo* disk_info)
 {
-    printf("DiskInfo | disk_name: %s | fileDescriptor: %d | disk_size: %d | status: %d", 
+    printf("DiskInfo | disk_name: %s | fileDescriptor: %d | disk_size: %zu | status: %d", 
     disk_info->disk_name,
     disk_info->fd,
     disk_info->disk_size,

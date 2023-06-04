@@ -43,7 +43,6 @@
 
 #define NUM_FREE_BLOCKS_ (NUM_BLOCKS_ - NUM_SPECIAL_BLOCKS_ - NUM_INODES_ - NUM_DATA_BLOCKS_)
 
-
 typedef int fileDescriptor;
 typedef struct disk_info DiskInfo;
 typedef struct disk_info FileInfo;
@@ -53,14 +52,12 @@ typedef struct inode iNode;
 typedef struct superblock Superblock;
 typedef struct file_system FileSystem;
 
-typedef enum {CLOSED = 0, OPEN = 1, UNMOUNTED = 0, MOUNTED = 1} Status;
-
 typedef enum {CLOSED, OPEN, MOUNTED, UNMOUNTED} DiskStatus;
 
 struct disk_info{
     char disk_name[MAX_DISKNAME_SIZE_];
     fileDescriptor fd;
-    size_t diskSize;
+    size_t disk_size;
     DiskStatus status;
 }__attribute__((packed));
 
@@ -128,11 +125,7 @@ int tfs_seek(fileDescriptor FD, int offset);
 
 extern DiskInfo DiskList[MAX_NUM_DISKS_];
 
-void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, Status status);
-
-
-
-
+void initDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, DiskStatus status);
 void printDiskInfo(const DiskInfo* disk_info);
 
 #endif

@@ -19,9 +19,9 @@ void init_DiskList()
 {
     int i;
     for(i = 0; i < MAX_NUM_DISKS_; i++){
-        DiskList[i].diskName[0] = '\0';
+        DiskList[i].disk_name[0] = '\0';
         DiskList[i].fd = -1;
-        DiskList[i].diskSize = 0;
+        DiskList[i].disk_size = 0;
         DiskList[i].status = CLOSED;
     }
     return;

@@ -15,8 +15,8 @@ int openDisk(char *filename, int nBytes)
   int modes = 0;
   fileDescriptor fd;
 
-  if(filename == NULL)
-    errorout("Filename is NULL.\n");
+  if(filename == NULL || strlen(filename) == 0)
+    errorout("Filename is empty or NULL.\n");
   
   if(nBytes % BLOCKSIZE_)
   {
@@ -48,9 +48,9 @@ int openDisk(char *filename, int nBytes)
     if(openFiles + 1 >= MAX_NUM_DISKS_)
         errorout("To many files open.\n");
 
-    if(filename < MAX_DISKNAME_SIZE_)
-      strcpy(DiskList[openFiles].diskName, filename);
-    DiskList[openFiles].diskSize = nBytes;
+    if(strlen(filename) < MAX_DISKNAME_SIZE_)
+      strcpy(DiskList[openFiles].disk_name, filename);
+    DiskList[openFiles].disk_size = nBytes;
     DiskList[openFiles].fd = fd;
     DiskList[openFiles++].status = 0; //Not mounted
 
@@ -132,21 +132,23 @@ void closeDisk(int disk)
     errorout("CloseDisk failed.\n");
   
   DiskList[diskIndex].fd = -1;        // Set to invalid FD
-  DiskList[diskIndex].status = close; // Set Disk status to closed
+  DiskList[diskIndex].status = CLOSED; // Set Disk status to closed
   
   return;
 }
 
-
+// diskInfo = disk_info of disk being flushed.
+// Returns 0 on when everything successfully writes to disk
 int flushDisk(DiskInfo diskInfo)
 {
-  
+
   // Write SuperBlock
   // Write Special Inode
   // Write Inode blocks
   // Write Data blocks
   // Write Free blocks
 
+  return 0;
 }
 
 // int disk = disk file descriptor. < 0 means info not provided
@@ -167,7 +169,7 @@ int getDiskListIndex(int disk, char *filename)
   if(filename != NULL) // Check for matching filename
   {
     for(index = 0; index < MAX_NUM_DISKS_; index++)
-      if(strcmp(DiskList[index].diskName, filename))
+      if(strcmp(DiskList[index].disk_name, filename))
         return index;
   }
   

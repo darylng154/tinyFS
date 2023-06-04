@@ -12,5 +12,6 @@ int readBlock(int disk, int bNum, void *block);
 int writeBlock(int disk, int bNum, void *block);
 void closeDisk(int disk);
 int getDiskListIndex(int disk, char *filename);
+int flushDisk(DiskInfo diskInfo);
 
 #endif
