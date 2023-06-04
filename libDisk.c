@@ -7,7 +7,8 @@
 
 DiskInfo DiskList[MAX_NUM_DISKS_];
 
-int openDisk(char *filename, int nBytes){
+int openDisk(char *filename, int nBytes)
+{
   static uint8_t openFiles = 0;
   char blockBuffer[10];
   int flags = 0;
@@ -17,22 +18,26 @@ int openDisk(char *filename, int nBytes){
   if(filename == NULL)
     errorout("Filename is NULL.\n");
   
-  if(nBytes % BLOCKSIZE_){
+  if(nBytes % BLOCKSIZE_)
+  {
     sprintf(blockBuffer, "Number of Bytes is not divisible by BLOCKSIZE (%d)",BLOCKSIZE_);
     errorout(blockBuffer);
   }
 
-  if(nBytes > 0 && access(filename, F_OK) != 0){ /* File does not exist*/
+  if(nBytes > 0 && access(filename, F_OK) != 0)
+  { /* File does not exist*/
     flags = O_RDWR | O_CREAT;  // Open for read/write, create if it doesnt't exist
     modes = S_IRUSR | S_IWUSR; // Give read write permissions to User
     fd = safeOpen(filename, flags, modes);
   }
-  else if(nBytes > 0){ /* File may or may not be created. Open/create for read/write*/
+  else if(nBytes > 0)
+  { /* File may or may not be created. Open/create for read/write*/
     flags = O_RDWR;   // Open for read/write
     modes = 0;        // Don't need modes when not creating a file
     fd = safeOpen(filename, flags, modes);
   }
-  else if(nBytes == 0){ /* Assumed file is open*/
+  else if(nBytes == 0)
+  { /* Assumed file is open*/
     flags = O_RDONLY; // Open for Read only
     modes = 0;        // Don't need modes when not creating a file
     fd = safeOpen(filename, flags, modes);
@@ -54,7 +59,8 @@ int openDisk(char *filename, int nBytes){
 
 // bNum = block index
 // seek to bNum in disk & read BLOCKSIZE_ bytes
-int readBlock(int disk, int bNum, void *block){
+int readBlock(int disk, int bNum, void *block)
+{
     ssize_t count;
     int offset;
 
@@ -76,7 +82,8 @@ int readBlock(int disk, int bNum, void *block){
     return -1;
 }
 
-int writeBlock(int disk, int bNum, void *block){
+int writeBlock(int disk, int bNum, void *block)
+{
   ssize_t count;
   int offset;
 
@@ -104,13 +111,65 @@ committing any writes being buffered by the real OS. */
 
 /* Still need to figure out what he means by committing writes. Is there a global
    buffer we need to flush?*/
-void closeDisk(int disk){
+void closeDisk(int disk)
+{
+  int diskIndex;
 
+  if((diskIndex = getDiskListIndex(disk, NULL)) < 0)
+  {
+    errorout("No Disk found when trying to close");
+  }
+  
+  if(flushDisk(DiskList[diskIndex]) != 0)
+  {
+    errorout("Flushing disk failed while closing Disk.\n");
+  }
+  
   errno = 0;
   close(disk);
-  
+
   if(errno)
     errorout("CloseDisk failed.\n");
-
+  
+  DiskList[diskIndex].fd = -1;        // Set to invalid FD
+  DiskList[diskIndex].status = close; // Set Disk status to closed
+  
   return;
+}
+
+
+int flushDisk(DiskInfo diskInfo)
+{
+  
+  // Write SuperBlock
+  // Write Special Inode
+  // Write Inode blocks
+  // Write Data blocks
+  // Write Free blocks
+
+}
+
+// int disk = disk file descriptor. < 0 means info not provided
+// char *fileName = name of disk
+// Return index or -1 upon not found
+int getDiskListIndex(int disk, char *filename)
+{
+  int index;
+
+  if(disk > 0) // Check for matching file descriptor
+  {
+    for(index = 0; index < MAX_NUM_DISKS_; index++)
+      if(DiskList[index].fd == disk)
+        return index;
+      
+  }
+
+  if(filename != NULL) // Check for matching filename
+  {
+    for(index = 0; index < MAX_NUM_DISKS_; index++)
+      if(strcmp(DiskList[index].diskName, filename))
+        return index;
+  }
+  
+  return -1; // Nothing found
 }

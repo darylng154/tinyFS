@@ -51,11 +51,13 @@ typedef struct superblock Superblock;
 typedef struct inode_name_pair iNodeNamePair;
 typedef struct inode iNode;
 
+typedef enum {CLOSED, OPEN, MOUNTED, UNMOUNTED} DiskStatus;
+
 struct disk_info{
     char diskName[MAX_DISKNAME_SIZE_];
     fileDescriptor fd;
     size_t diskSize;
-    uint8_t status;
+    DiskStatus status;
 }__attribute__((packed));
 
 struct inode_name_pair{
