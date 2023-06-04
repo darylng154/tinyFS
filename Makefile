@@ -32,5 +32,6 @@ clean:
 # DO NOT DELETE
 
 libDisk.o: libTinyFS.h libDisk.h safeutil.h
+libTinyFS.o: libTinyFS.h libDisk.h safeutil.h
 tinyFsDemo.o: libDisk.h libTinyFS.h safeutil.h
 safeutil.o: safeutil.h

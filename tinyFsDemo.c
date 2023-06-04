@@ -5,6 +5,9 @@
 #include <fcntl.h>
 
 DiskInfo DiskList[MAX_NUM_DISKS_];
+FileSystem fs;
+
+void putBLOCKSIZE(char* block);
 
 void putBLOCKSIZE(char* block)
 {
@@ -15,25 +18,14 @@ void putBLOCKSIZE(char* block)
     }
 }
 
-void init_DiskList()
-{
-    int i;
-    for(i = 0; i < MAX_NUM_DISKS_; i++){
-        DiskList[i].disk_name[0] = '\0';
-        DiskList[i].fd = -1;
-        DiskList[i].disk_size = 0;
-        DiskList[i].status = CLOSED;
-    }
-    return;
-}
-
 int main(int argc, char *argv[]){
 
     char* filename = "file2.txt";
     char block[BLOCKSIZE_ + 1];
     char write[BLOCKSIZE_ + 1];
     putBLOCKSIZE(write);
-    init_DiskList();
+    initDiskList();
+    initFileSystem();
 
     fileDescriptor disk = openDisk(filename, BLOCKSIZE_);
     // fileDescriptor disk = safeOpen(filename, O_RDWR, S_IRUSR | S_IWUSR);
@@ -55,7 +47,7 @@ int main(int argc, char *argv[]){
     DiskInfo* disk_info = NULL;
     
     printf("\n\n");
-    initDiskInfo(disk_info, "Disk Info 1", 0, 0, CLOSED);
+    setDiskInfo(disk_info, "Disk Info 1", 0, 0, CLOSED);
     printDiskInfo(disk_info);
 
     return 0;
