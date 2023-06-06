@@ -24,8 +24,8 @@ int main(int argc, char *argv[]){
     char block[BLOCKSIZE_ + 1];
     char write[BLOCKSIZE_ + 1];
     putBLOCKSIZE(write);
-    initDiskList();
-    initFileSystem();
+    // initDiskList();
+    // initFileSystem();
 
     fileDescriptor disk = openDisk(filename, BLOCKSIZE_);
     // fileDescriptor disk = safeOpen(filename, O_RDWR, S_IRUSR | S_IWUSR);
@@ -46,9 +46,13 @@ int main(int argc, char *argv[]){
     // testing init structs
     DiskInfo* disk_info = NULL;
     
-    printf("\n\n");
-    setDiskInfo(disk_info, "Disk Info 1", 0, 0, CLOSED);
-    printDiskInfo(disk_info);
+    // printf("\n\n");
+    // setDiskInfo(disk_info, "Disk Info 1", 0, 0, CLOSED);
+    // printDiskInfo(disk_info);
+
+    printf("TOTAL_BLOCKS_: %d \n", TOTAL_BLOCKS_);
+
+    closeDisk(disk);
 
     return 0;
 }

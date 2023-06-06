@@ -8,7 +8,7 @@
 // iNode iNodeList[NUM_INODES_];
 // Superblock sb;
 FileSystem fs;
-DiskInfo DiskList[MAX_NUM_DISKS_];
+// DiskInfo DiskList[MAX_NUM_DISKS_];
 
 int tfs_mkfs(char *filename, int nBytes)
 {
@@ -179,20 +179,20 @@ void initDiskInfo(DiskInfo *disk_info)
     return;
 }
 
-void setDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, DiskStatus status)
-{
-    disk_info = (DiskInfo*) safeMalloc(sizeof(DiskInfo));
-    strcpy(disk_info->disk_name, disk_name);
-    disk_info->fd = fd;
-    disk_info->disk_size = disk_size;
-    disk_info->status = status;
-}
+// void setDiskInfo(DiskInfo* disk_info, char* disk_name, fileDescriptor fd, size_t disk_size, DiskStatus status)
+// {
+//     disk_info = (DiskInfo*) safeMalloc(sizeof(DiskInfo));
+//     strcpy(disk_info->disk_name, disk_name);
+//     disk_info->fd = fd;
+//     disk_info->disk_size = disk_size;
+//     disk_info->status = status;
+// }
 
-void printDiskInfo(const DiskInfo* disk_info)
-{
-    printf("DiskInfo | disk_name: %s | fileDescriptor: %d | disk_size: %zu | status: %d", 
-    disk_info->disk_name,
-    disk_info->fd,
-    disk_info->disk_size,
-    disk_info->status);
-}
+// void printDiskInfo(const DiskInfo* disk_info)
+// {
+//     printf("DiskInfo | disk_name: %s | fileDescriptor: %d | disk_size: %zu | status: %d", 
+//     disk_info->disk_name,
+//     disk_info->fd,
+//     disk_info->disk_size,
+//     disk_info->status);
+// }
