@@ -4,7 +4,7 @@
 
 #include <fcntl.h>
 
-DiskInfo DiskList[MAX_NUM_DISKS_];
+// DiskInfo DiskList[MAX_NUM_DISKS_];
 FileSystem fs;
 
 void putBLOCKSIZE(char* block);
@@ -24,8 +24,8 @@ int main(int argc, char *argv[]){
     char block[BLOCKSIZE_ + 1];
     char write[BLOCKSIZE_ + 1];
     putBLOCKSIZE(write);
-    // initDiskList();
-    // initFileSystem();
+    initDiskList();
+    initFileSystem();
 
     fileDescriptor disk = openDisk(filename, BLOCKSIZE_);
     // fileDescriptor disk = safeOpen(filename, O_RDWR, S_IRUSR | S_IWUSR);
@@ -51,6 +51,8 @@ int main(int argc, char *argv[]){
     // printDiskInfo(disk_info);
 
     printf("TOTAL_BLOCKS_: %d \n", TOTAL_BLOCKS_);
+    printf("MAX_INDE_NME_PAIRS_: %d \n", MAX_INDE_NME_PAIRS_);
+    printf("sizeof(iNodeNamePair): %d \n", sizeof(iNodeNamePair));
 
     closeDisk(disk);
 

@@ -8,12 +8,20 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-// #define MAX_NUM_DISKS_       10       // How many disks can be opened at a time
+#define MAX_NUM_DISKS_       10       // How many disks can be opened at a time
 #define BLOCKSIZE_           256      // Read/Write block sizes
 #define DEFAULT_DISK_SIZE_   10240    // Size of disk. Must be multiple of BLOCKSIZE_. 
 #define TOTAL_BLOCKS_       (DEFAULT_DISK_SIZE_/BLOCKSIZE_)
 #define MAX_FILENAME_SIZE_       9      // support names up to 8 alphanumeric characters
 #define MAX_DISKNAME_SIZE_      256
+#define MAX_NUM_DISKS_          1
+#define MAX_INDE_NME_PAIRS_ ((uint8_t)(BLOCKSIZE_ / sizeof(iNodeNamePair))) // Assuming Special Inode is 1 block
+
+
+#define SUPER_BLOCK_INDEX_   0          // Block location on disk for readBlock
+#define MAGIC_NUM_INDEX_     0          // Block location on disk for readBlock
+#define MAGIC_NUM_TYPE_DISK_ 0x5A       // tinyFS magic number
+
 
 typedef int fileDescriptor;
 typedef struct disk_info DiskInfo;
@@ -70,8 +78,10 @@ struct superblock
     // including a NULL terminator), and no longer. For example: “file1234”, “file1” or “f”.
     int special_bNum; 
 
-    size_t disk_size;
-    uint32_t alloc_blocks;
+    uint32_t max_blocks;
+    uint32_t inode_blocks;
+    uint8_t data_blocks;
+    // uint32_t alloc_blocks;
     uint32_t free_blocks;
     // add data structure of the blocks (potentiall managing all block types)
 }__attribute__((packed));
@@ -83,7 +93,7 @@ struct data_block
 
 struct file_system
 {
-    DiskInfo disk_info;
+    // DiskInfo disk_info;  // moved file system inside of DiskInfo
     // opened file resource table
     Superblock superblock;
     // iNodeNamePair special_inode_list[MAX_INDE_NME_PAIRS_];
@@ -116,6 +126,7 @@ void printDiskInfo(const DiskInfo* disk_info);
 // extern DiskInfo DiskList[MAX_NUM_DISKS_];
 // extern iNode iNodeList[NUM_INODES_];
 // extern Superblock sb;
-extern FileSystem fs; 
+// extern FileSystem fs; 
+extern DiskInfo currDisk;
 
 #endif

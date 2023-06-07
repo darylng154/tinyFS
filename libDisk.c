@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// DiskInfo DiskList[MAX_NUM_DISKS_];
+DiskInfo DiskList[MAX_NUM_DISKS_];
 
 int openDisk(char *filename, int nBytes)
 {
@@ -46,13 +46,13 @@ int openDisk(char *filename, int nBytes)
     errorout("Number of bytes must be positive.\n");
 
     // if(openFiles + 1 >= MAX_NUM_DISKS_)
-    //     errorout("To many files open.\n");
+    //     errorout("Too many files open.\n");
 
-    // if(strlen(filename) < MAX_DISKNAME_SIZE_)
-    //   strcpy(DiskList[openFiles].disk_name, filename);
-    // DiskList[openFiles].disk_size = nBytes;
-    // DiskList[openFiles].fd = fd;
-    // DiskList[openFiles++].status = 0; //Not mounted
+    if(strlen(filename) < MAX_DISKNAME_SIZE_)
+      strcpy(DiskList[openFiles].disk_name, filename);
+    DiskList[openFiles].disk_size = nBytes;
+    DiskList[openFiles].fd = fd;
+    DiskList[openFiles++].status = 0; //Not mounted
 
   return fd; /* Souldn't get here*/
 }
@@ -115,15 +115,15 @@ void closeDisk(int disk)
 {
   int diskIndex;
 
-  // if((diskIndex = getDiskListIndex(disk, NULL)) < 0)
-  // {
-  //   errorout("No Disk found when trying to close");
-  // }
+  if((diskIndex = getDiskListIndex(disk, NULL)) < 0)
+  {
+    errorout("No Disk found when trying to close");
+  }
   
-  // if(flushDisk(DiskList[diskIndex]) != 0)
-  // {
-  //   errorout("Flushing disk failed while closing Disk.\n");
-  // }
+  if(flushDisk(DiskList[diskIndex]) != 0)
+  {
+    errorout("Flushing disk failed while closing Disk.\n");
+  }
 
   if(disk == NULL)
   {
@@ -136,8 +136,8 @@ void closeDisk(int disk)
   if(errno)
     errorout("CloseDisk failed.\n");
   
-  // DiskList[diskIndex].fd = -1;        // Set to invalid FD
-  // DiskList[diskIndex].status = CLOSED; // Set Disk status to closed
+  DiskList[diskIndex].fd = -1;        // Set to invalid FD
+  DiskList[diskIndex].status = CLOSED; // Set Disk status to closed
   
   return;
 }
@@ -159,24 +159,24 @@ int flushDisk(DiskInfo diskInfo)
 // int disk = disk file descriptor. < 0 means info not provided
 // char *fileName = name of disk
 // Return index or -1 upon not found
-// int getDiskListIndex(int disk, char *filename)
-// {
-//   int index;
+int getDiskListIndex(int disk, char *filename)
+{
+  int index;
 
-//   if(disk > 0) // Check for matching file descriptor
-//   {
-//     for(index = 0; index < MAX_NUM_DISKS_; index++)
-//       if(DiskList[index].fd == disk)
-//         return index;
+  if(disk > 0) // Check for matching file descriptor
+  {
+    for(index = 0; index < MAX_NUM_DISKS_; index++)
+      if(DiskList[index].fd == disk)
+        return index;
       
-//   }
+  }
 
-//   if(filename != NULL) // Check for matching filename
-//   {
-//     for(index = 0; index < MAX_NUM_DISKS_; index++)
-//       if(strcmp(DiskList[index].disk_name, filename))
-//         return index;
-//   }
+  if(filename != NULL) // Check for matching filename
+  {
+    for(index = 0; index < MAX_NUM_DISKS_; index++)
+      if(strcmp(DiskList[index].disk_name, filename))
+        return index;
+  }
   
-//   return -1; // Nothing found
-// }
+  return -1; // Nothing found
+}
